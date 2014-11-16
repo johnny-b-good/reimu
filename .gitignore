@@ -1,3 +1,4 @@
 *.pyc
 venv/
 .idea
+reimu/blog.db
