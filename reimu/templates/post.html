@@ -6,13 +6,16 @@
 
 {% block content %}
 <article>
-    <h1>{{ title }}</h1>
+    <h1>{{ post['title'] }}</h1>
 
-    {{ content }}
+    {{ post['content'] }}
 
+    <hr/>
     <section>
         {% for comment in comments %}
-            
+            <b>{{ comment['author'] }}</b> :: {{ comment['content'] }}
+            <br/>
+            <br/>
         {% endfor %}
 
     </section>

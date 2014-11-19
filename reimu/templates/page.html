@@ -1,5 +1,16 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% for post in posts %}
+<article>
+    <h1>{{ post['title'] }}</h1>
+    <div> {{ post['content'] }}</div>
+    <hr/>
+</article>
+{% endfor %}
+{% endblock %}
 
+
+{% block pagination %}
+    EH: {{ current_page }}/{{ pages_count }}
 {% endblock %}

@@ -4,6 +4,10 @@ from faker import Factory
 fake = Factory.create()
 
 
+def init_db():
+    pass
+
+
 def populate_db():
     """(Re)Populate blog's database with fake posts and comments."""
 
@@ -23,9 +27,12 @@ def populate_db():
     # Inser comments (7 comments per post - 210)
     comments_query = ('INSERT INTO Comments (cid, pid, author, email, created_at, content) '
                       'VALUES (?,?,?,?,?,?);')
-    comments_values = [(i, i//7, fake.name(), fake.email(), fake.date(), fake.paragraph()) for i in range(210)]
+    comments_values = [
+        (i, i//7, fake.name(), fake.email(), fake.date(), fake.paragraph())
+        for i in range(210)]
     cursor.executemany(comments_query, comments_values)
 
     # Execute statements and close connection
     connection.commit()
     connection.close()
+
