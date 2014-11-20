@@ -23,12 +23,12 @@ def teardown_request(exception):
 
 
 @blog.route('/')
-@blog.route('/<int:page>')
-def page(page=0):
+@blog.route('/<int:page_num>')
+def page(page_num=0):
     """Render a blog page with posts"""
 
     # Get all posts for a given page, return 404 if there are none
-    posts_limits = (page*POSTS_PER_PAGE, POSTS_PER_PAGE)
+    posts_limits = (page_num*POSTS_PER_PAGE, POSTS_PER_PAGE)
     posts = g.db.cursor().execute('SELECT * FROM Posts LIMIT ?,?;', posts_limits).fetchall()
     if not posts:
         abort(404)
@@ -44,7 +44,7 @@ def page(page=0):
         pages_count = posts_count // POSTS_PER_PAGE
 
     return render_template('page.html', posts=posts, posts_count=posts_count,
-                           pages_count=pages_count, current_page=page)
+                           pages_count=pages_count, current_page=page_num)
 
 
 @blog.route('/posts/<int:post_id>')
