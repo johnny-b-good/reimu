@@ -3,7 +3,7 @@
 {% block content %}
 {% for post in posts %}
 <article>
-    <h1>{{ post['title'] }}</h1>
+    <h1>{{ post['pid'] }}.{{ post['title'] }}</h1>
     <div> {{ post['content'] }}</div>
     <hr/>
 </article>
@@ -12,5 +12,13 @@
 
 
 {% block pagination %}
-    EH: {{ current_page }}/{{ pages_count }}
+    <hr/>
+    {% for page in range(pages_count)%}
+        {% if page == current_page %}
+            <span>{{ page }}</span>
+        {% else %}
+            <a href="{{ url_for('blog.page', page=page) }}">{{ page }}</a>
+        {% endif %}
+    {% endfor %}
+    <hr/>
 {% endblock %}
