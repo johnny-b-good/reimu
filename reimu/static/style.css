@@ -1,0 +1,15 @@
+body {
+    font: 13px/20px 'Open Sans';
+    background: aliceblue;
+    color: #333;
+    width: 800px;
+    margin: 40px auto;
+}
+
+h1 {
+    font: 30px/40px 'Open Sans';
+}
+
+a {
+    color: royalblue;
+}
