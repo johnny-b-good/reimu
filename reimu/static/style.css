@@ -13,3 +13,23 @@ h1 {
 a {
     color: royalblue;
 }
+
+.pagination {
+    text-align: center;
+}
+
+.pagination__item {
+    display: inline-block;
+    border: 1px solid royalblue;
+    text-decoration: none;
+    border-radius: 3px;
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    line-height: 28px;
+    margin: 0 2px;
+}
+.pagination__item--current {
+    background: royalblue;
+    color: #eee;
+}

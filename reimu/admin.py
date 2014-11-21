@@ -19,14 +19,7 @@ def admin_page():
     pass
 
 
-@admin.route('/login', methods=['GET', 'POST'])
-def login():
-    pass
 
-
-@admin.route('/logout', methods=['GET', 'POST'])
-def logout():
-    pass
 
 
 @admin.route('/admin/posts')

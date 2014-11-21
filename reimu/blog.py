@@ -24,7 +24,7 @@ def teardown_request(exception):
 
 @blog.route('/')
 @blog.route('/<int:page_num>')
-def page(page_num=0):
+def blog_page(page_num=0):
     """Render a blog page with posts"""
 
     # Get all posts for a given page, return 404 if there are none
@@ -66,6 +66,23 @@ def read_post(post_id):
 def create_comment():
     pass
 
+
+@blog.route('/login', methods=['POST'])
+def login_page():
+    """Render the login page"""
+    pass
+
+
+@blog.route('/login', methods=['POST'])
+def login():
+    """Login as site admin."""
+    pass
+
+
+@blog.route('/logout', methods=['GET', 'POST'])
+def logout():
+    """Logout"""
+    pass
 
 
 # TODO
