@@ -10,6 +10,10 @@
         BLOG HEADER
     </header>
 
+    {% if session['is_admin'] %}
+        <div class="is-admin">ОДМИН</div>
+    {% endif %}
+
     <main>
         {% block content %}{% endblock %}
         {% block pagination %}{% endblock %}

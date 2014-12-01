@@ -1,10 +1,9 @@
-from flask import Blueprint, g, render_template, abort, redirect, url_for
+from flask import Blueprint, g, render_template, abort, redirect, url_for, request, current_app, session
 import sqlite3
 
 POSTS_PER_PAGE = 10
 
 blog = Blueprint('blog', __name__)
-
 
 
 @blog.before_request
@@ -24,7 +23,7 @@ def teardown_request(exception):
 
 @blog.route('/')
 @blog.route('/<int:page_num>')
-def blog_page(page_num=0):
+def index_page(page_num=0):
     """Render a blog page with posts"""
 
     # Get all posts for a given page, return 404 if there are none
@@ -48,7 +47,7 @@ def blog_page(page_num=0):
 
 
 @blog.route('/posts/<int:post_id>')
-def read_post(post_id):
+def post_page(post_id):
     """Render a single post if present"""
 
     # Try to get post's data, 404 if not found
@@ -62,26 +61,38 @@ def read_post(post_id):
     return render_template('post.html', post=post, comments=comments)
 
 
-@blog.route('/comments', methods=['POST'])
-def create_comment():
-    pass
-
-
-@blog.route('/login', methods=['POST'])
+@blog.route('/login', methods=['GET'])
 def login_page():
     """Render the login page"""
-    pass
+    return render_template('login.html')
 
 
 @blog.route('/login', methods=['POST'])
 def login():
     """Login as site admin."""
-    pass
+
+    # Successeful login conditions
+    user_is_valid = request.form['user'] == current_app.config['USER']
+    password_is_valid = request.form['password'] == current_app.config['PASSWORD']
+    trap_is_empty = not request.form['trap']
+
+    # Login user if credentials are correct
+    if user_is_valid and password_is_valid and trap_is_empty:
+        session['is_admin'] = True
+        return redirect(url_for('blog.index_page'))
+    else:
+        return render_template('login.html')
 
 
 @blog.route('/logout', methods=['GET', 'POST'])
 def logout():
     """Logout"""
+    session.pop('is_admin', None)
+    return redirect(url_for('blog.index_page'))
+
+
+@blog.route('/comments', methods=['POST'])
+def create_comment():
     pass
 
 

@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}"/>
+    <title>{% block title %}BLOG NAME{% endblock %}</title>
+</head>
+<body>
+
+<form action=""></form>
+
+<form class="login-form" action="{{ url_for('blog.login') }}" method="post">
+    <input class="login-form__trap" name="trap" type="text"/>
+    <input class="login-form__user" name="user" type="text" placeholder="Пользователь"/>
+    <input class="login-form__password" name="password" type="password" placeholder="Пароль"/>
+    <button type="submit">Войти</button>
+</form>
+
+</body>
+</html>
