@@ -3,6 +3,7 @@ from markdown import markdown
 
 from reimu.blog import blog
 from reimu.admin import admin
+from reimu.auth import auth
 
 
 # Initialize application
@@ -16,6 +17,7 @@ app.config.from_object('reimu.config')
 # Register blueprints
 app.register_blueprint(blog)
 app.register_blueprint(admin)
+app.register_blueprint(auth)
 
 
 # Register filters

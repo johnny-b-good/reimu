@@ -1,7 +1,7 @@
 from flask import Blueprint, g, render_template, abort, redirect, url_for, request, current_app, session
-import sqlite3
 
 import reimu.db
+
 
 admin = Blueprint('admin', __name__)
 
@@ -9,9 +9,10 @@ admin = Blueprint('admin', __name__)
 @admin.before_request
 def before_request():
     if not session.get('is_admin'):
-        abort(403)
+        return redirect(url_for('blog.index_page'))
 
     reimu.db.connect()
+
 
 
 @admin.teardown_request
@@ -21,7 +22,7 @@ def teardown_request(exception):
 
 @admin.route('/admin')
 def admin_page():
-    pass
+    return ''
 
 
 @admin.route('/admin/posts')
