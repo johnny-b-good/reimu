@@ -1,25 +1,27 @@
-from flask import Blueprint
-import reimu.db as db
+from flask import Blueprint, g, render_template, abort, redirect, url_for, request, current_app, session
+import sqlite3
+
+import reimu.db
 
 admin = Blueprint('admin', __name__)
 
 
 @admin.before_request
 def before_request():
-    pass
+    if not session.get('is_admin'):
+        abort(403)
+
+    reimu.db.connect()
 
 
 @admin.teardown_request
 def teardown_request(exception):
-    pass
+    reimu.db.disconnect()
 
 
 @admin.route('/admin')
 def admin_page():
     pass
-
-
-
 
 
 @admin.route('/admin/posts')

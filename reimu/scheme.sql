@@ -1,3 +1,4 @@
+-- Таблица постов
 CREATE TABLE Posts (
   pid INTEGER PRIMARY KEY AUTOINCREMENT,
   title TEXT,
@@ -9,7 +10,7 @@ CREATE TABLE Posts (
 CREATE UNIQUE INDEX posts__pid_index ON Posts (pid);
 
 
-
+-- Таблица комментариев
 CREATE TABLE Comments (
   cid INTEGER PRIMARY KEY AUTOINCREMENT,
   pid INTEGER NOT NULL,
