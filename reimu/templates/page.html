@@ -5,10 +5,10 @@
 <article>
     <h1>
         <a href="{{ url_for('blog.post_page', post_id=post['pid']) }}">
-            {{ post['pid'] }}.{{ post['title'] }}
+            {{ post.pid }}. {{ post.title }}
         </a>
     </h1>
-    <div> {{ post['content'] }}</div>
+    <div> {{ post.content }}</div>
     <hr/>
 </article>
 {% endfor %}

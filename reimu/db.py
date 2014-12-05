@@ -53,14 +53,20 @@ def populate_db():
     db.close()
 
 
+class RowObject(object):
+    """Table row object."""
+    def __init__(self, row, column_names):
+        for i, name in enumerate(column_names):
+            setattr(self, name, row[i])
+
+
 def connect():
     """Connect to database from application."""
     g.db = sqlite3.connect(current_app.config['DATABASE'])
-    g.db.row_factory = sqlite3.Row
 
 
 def disconnect():
-    """Disconnect from database."""
+    """Close application's database connection."""
     db = getattr(g, 'db', None)
     if db is not None:
         db.close()
@@ -70,13 +76,15 @@ def select(query, arguments, single=False):
     """Select one or more rows from database."""
     cursor = g.db.cursor()
     cursor.execute(query, arguments)
+    rows = cursor.fetchall()
+    column_names = [col[0] for col in cursor.description]
+
+    row_objects = [RowObject(row, column_names) for row in rows]
 
     if single:
-        result = cursor.fetchone()
+        return row_objects[0]
     else:
-        result = cursor.fetchall()
-
-    return result
+        return row_objects
 
 
 def count(table):
