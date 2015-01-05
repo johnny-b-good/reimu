@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}"/>
+    <title>{% block title %}BLOG NAME{% endblock %}</title>
+</head>
+<body>
+
+<div class="admin">
+    <div class="posts">
+        <ul class="posts__list">
+            {% for post in post_list %}
+            <li class="posts__item">
+                {{ post.created_at }}
+                <a class="posts__link" href="{{ url_for('admin.admin_page', post_id=post.pid) }}">
+                    {{ post.title }}
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="editor">
+        <div class="editor__panel"></div>
+        <input class="editor__title" type="text" value="{{ current_post.title }}"/>
+        <textarea class="editor__content" name="">{{ current_post.content }}</textarea>
+    </div>
+
+</div>
+
+
+</body>
+</html>

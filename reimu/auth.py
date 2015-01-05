@@ -6,7 +6,7 @@ auth = Blueprint('auth', __name__)
 @auth.route('/login', methods=['GET'])
 def login_page():
     """Render the login page."""
-    return render_template('login.html')
+    return render_template('auth.html')
 
 
 @auth.route('/login', methods=['POST'])
@@ -21,9 +21,9 @@ def login():
     # Login user if credentials are correct
     if user_is_valid and password_is_valid and trap_is_empty:
         session['is_admin'] = True
-        return redirect(url_for('blog.index_page'))
+        return redirect(url_for('admin.posts_page'))
     else:
-        return render_template('login.html')
+        return render_template('auth.html')
 
 
 @auth.route('/logout', methods=['GET', 'POST'])

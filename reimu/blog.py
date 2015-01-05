@@ -37,7 +37,7 @@ def index_page(page_num=0):
     else:
         pages_count = posts_count // POSTS_PER_PAGE
 
-    return render_template('page.html', posts=posts, posts_count=posts_count,
+    return render_template('_page.html', posts=posts, posts_count=posts_count,
                            pages_count=pages_count, current_page=page_num)
 
 
@@ -53,10 +53,7 @@ def post_page(post_id):
     # Fetch all comments for that post
     comments = reimu.db.select('SELECT * FROM Comments WHERE pid=?;', (post_id,))
 
-    return render_template('post.html', post=post, comments=comments)
-
-
-
+    return render_template('_post.html', post=post, comments=comments)
 
 
 @blog.route('/comments', methods=['POST'])

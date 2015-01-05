@@ -2,9 +2,10 @@
 CREATE TABLE Posts (
   pid INTEGER PRIMARY KEY AUTOINCREMENT,
   title TEXT,
-  created_at DATETIME NOT NULL,
+  content TEXT,
+  created_at DATETIME,
   updated_at DATETIME,
-  content TEXT
+  is_published BOOLEAN
 );
 
 CREATE UNIQUE INDEX posts__pid_index ON Posts (pid);
@@ -16,7 +17,7 @@ CREATE TABLE Comments (
   pid INTEGER NOT NULL,
   author TEXT,
   email TEXT,
-  created_at DATETIME NOT NULL,
+  created_at DATETIME,
   content TEXT,
 
   FOREIGN KEY(pid) REFERENCES Posts(pid)

@@ -32,7 +32,7 @@ def populate_db():
     cursor.execute('DELETE FROM Comments;')
     cursor.execute('DELETE FROM Posts;')
 
-    # Insert posts (30)
+    # Create and insert posts (30)
     posts_query = ('INSERT INTO Posts (pid, title, created_at, content) '
                    'VALUES (?, ?, ?, ?);')
     posts_values = [
@@ -40,7 +40,7 @@ def populate_db():
         for i in range(30)]
     cursor.executemany(posts_query, posts_values)
 
-    # Inser comments (10 comments per post - 210)
+    # Create and insert comments (10 comments per post - 300)
     comments_query = ('INSERT INTO Comments (cid, pid, author, email, created_at, content) '
                       'VALUES (?, ?, ?, ?, ?, ?);')
     comments_values = [
@@ -72,7 +72,7 @@ def disconnect():
         db.close()
 
 
-def select(query, arguments, single=False):
+def select(query, arguments=(), single=False):
     """Select one or more rows from database."""
     cursor = g.db.cursor()
     cursor.execute(query, arguments)
