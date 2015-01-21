@@ -1,35 +1,133 @@
-@font-face {
-    font-family: 'Fixedsys';
-    src: url('FSEX300.ttf');
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,300&subset=latin,cyrillic);
+
+html {
+    height: 100%;
 }
 
 body {
-    background: black;
+    background: #222;
+    font: 14px 'Open Sans', sans-serif;
+    margin: 0;
+    height: 100%;
 }
 
-
-a {
-    color: inherit;
-    text-decoration: none;
-}
-a:hover {
-    background: #059A9A;
-    color: #000000;
-}
-
-input, textarea {
-    font-family: inherit;
-    background: inherit;
-    font: inherit;
-    color: inherit;
+.templates,
+.scripts {
+    display: none;
 }
 
 .admin {
-    font: 16px/1 Fixedsys, monospace;
-    background: #3465A4;
-    color: #EEEEEC;
-
-    width: 1024px;
-    height: 768px;
     display: flex;
+    height: 100%;
+
+    width: 1500px;
+    margin: 0 auto;
+    background: snow;
+}
+
+.list {
+    width: 500px;
+    order: 1;
+    padding-top: 40px;
+    position: relative;
+}
+
+.list__items {
+    height: 100%;
+    font-size: 13px;
+    margin: 0;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.list__item {
+    list-style: none;
+}
+
+.list__item:nth-child(2n+1) {
+    background: #eee;
+}
+
+.list__item-link {
+    text-decoration: none;
+    color: inherit;
+    padding: 3px 10px;
+    transition: color 0.3s ease;
+
+    display: block;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.list__item-link:hover {
+    color: royalblue;
+}
+
+
+.editor {
+    order: 0;
+    width: 1200px;
+    position: relative;
+    padding-top: 40px;
+    box-sizing: border-box;
+    padding: 40px 80px 0;
+}
+
+.editor__header {
+    position: relative;
+    height: 36px;
+    padding-left: 180px;
+}
+
+.editor__slash {
+    position: absolute;
+    left: 150px;
+    width: 30px;
+    text-align: center;
+}
+
+.editor__content {
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+
+    border: 1px solid rgba(0,0,0, 0.3);
+    box-shadow: inset 0 0 5px rgba(0,0,0, 0.3);
+    border-radius: 5px;
+    resize: none;
+
+    font-family: "Droid Sans Mono";
+    font-size: 14px;
+}
+
+.editor__created-at,
+.editor__title {
+    box-sizing: border-box;
+    padding: 5px 10px;
+
+    border: 1px solid rgba(0,0,0, 0.3);
+    border-radius: 5px;
+    box-shadow: inset 0 0 3px rgba(0,0,0, 0.3);
+
+    font-family: "Droid Sans Mono";
+    font-size: 20px;
+}
+
+.editor__created-at {
+    width: 150px;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.editor__title {
+    width: 100%;
+}
+
+.editor__content:focus,
+.editor__created-at:focus,
+.editor__title:focus {
+    border-color: royalblue;
 }

@@ -2,13 +2,13 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='lib/pure-0.5.0.css') }}"/>
     <link rel="stylesheet" href="{{ url_for('static', filename='auth.css') }}"/>
     <title>{% block title %}BLOG NAME{% endblock %}</title>
 </head>
 <body>
 
-<form action=""></form>
-
+test
 <form class="login-form" action="{{ url_for('auth.login') }}" method="post">
     <input class="login-form__trap" name="trap" type="text"/>
     <input class="login-form__user" name="user" type="text" placeholder="Пользователь"/>

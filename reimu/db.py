@@ -33,10 +33,11 @@ def populate_db():
     cursor.execute('DELETE FROM Posts;')
 
     # Create and insert posts (30)
-    posts_query = ('INSERT INTO Posts (pid, title, created_at, content) '
-                   'VALUES (?, ?, ?, ?);')
+    posts_query = (
+        'INSERT INTO Posts (pid, title, content, created_at, updated_at, is_published) '
+        'VALUES (?, ?, ?, ?, ?, ?);')
     posts_values = [
-        (i, fake.sentence(), fake.date(), _generate_fake_text(7))
+        (i, fake.sentence(), _generate_fake_text(7), fake.date(), None, True)
         for i in range(30)]
     cursor.executemany(posts_query, posts_values)
 
@@ -55,9 +56,9 @@ def populate_db():
 
 class RowObject(object):
     """Table row object."""
-    def __init__(self, row, column_names):
-        for i, name in enumerate(column_names):
-            setattr(self, name, row[i])
+    def __init__(self, row, columns):
+        for i, column in enumerate(columns):
+            setattr(self, column, row[i])
 
 
 def connect():
@@ -72,19 +73,23 @@ def disconnect():
         db.close()
 
 
-def select(query, arguments=(), single=False):
+def select(query, arguments=(), single=False, row_type='object'):
     """Select one or more rows from database."""
     cursor = g.db.cursor()
     cursor.execute(query, arguments)
     rows = cursor.fetchall()
-    column_names = [col[0] for col in cursor.description]
 
-    row_objects = [RowObject(row, column_names) for row in rows]
+    # Convert rows to desired type
+    column_names = [col[0] for col in cursor.description]
+    if row_type == 'object':
+        rows = [RowObject(row, column_names) for row in rows]
+    elif row_type == 'dict':
+        rows = [dict(zip(column_names, row)) for row in rows]
 
     if single:
-        return row_objects[0]
+        return rows[0] if len(rows) else None
     else:
-        return row_objects
+        return rows
 
 
 def count(table):
@@ -93,3 +98,18 @@ def count(table):
     cursor.execute('SELECT COUNT() FROM {};'.format(table))
     result = cursor.fetchone()[0]
     return result
+
+
+def update(query, arguments=()):
+    """Update a row"""
+    cursor = g.db.cursor()
+    cursor.execute(query, arguments)
+    g.db.commit()
+
+
+def insert(query, arguments=()):
+    """Insert a row, return it's id"""
+    cursor = g.db.cursor()
+    cursor.execute(query, arguments)
+    g.db.commit()
+    return cursor.lastrowid

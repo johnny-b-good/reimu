@@ -24,7 +24,9 @@ def index_page(page_num=0):
 
     # Get all posts for a given page, return 404 if there are none
     posts_limits = (page_num*POSTS_PER_PAGE, POSTS_PER_PAGE)
-    posts = reimu.db.select('SELECT * FROM Posts LIMIT ?,?;', posts_limits)
+    posts = reimu.db.select('SELECT * FROM Posts '
+                            'ORDER BY created_at DESC '
+                            'LIMIT ?,?', posts_limits)
     if not posts:
         abort(404)
 
@@ -51,7 +53,9 @@ def post_page(post_id):
         abort(404)
 
     # Fetch all comments for that post
-    comments = reimu.db.select('SELECT * FROM Comments WHERE pid=?;', (post_id,))
+    comments = reimu.db.select('SELECT * FROM Comments '
+                               'WHERE pid=? '
+                               'ORDER BY created_at DESC;', (post_id,))
 
     return render_template('_post.html', post=post, comments=comments)
 
