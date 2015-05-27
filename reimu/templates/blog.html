@@ -5,17 +5,20 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='blog.css') }}"/>
     <title>{% block title %}BLOG NAME{% endblock %}</title>
 </head>
+
 <body>
-    <header>
-        BLOG HEADER
+    <header class="header">
+        <div class="header__inner">BLOG HEADER</div>
     </header>
 
     {% if session['is_admin'] %}
         <div class="is-admin">ОДМИН</div>
     {% endif %}
 
-    <main>
-        {% block content %}{% endblock %}
+    <main class="main">
+        <div class="blog__content">
+            {% block content %}{% endblock %}
+        </div>
         {% block pagination %}{% endblock %}
     </main>
 

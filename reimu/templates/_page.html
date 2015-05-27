@@ -2,14 +2,14 @@
 
 {% block content %}
 {% for post in posts %}
-<article>
-    <h1>
-        <a href="{{ url_for('blog.post_page', post_id=post['pid']) }}">
-            {{ post.created_at }}. {{ post.title }}
+<article class="post">
+    <h1 class="post__header">
+        <a class="post__link" href="{{ url_for('blog.post_page', post_id=post['pid']) }}">
+            {{ post.title }}
         </a>
+        <div class="post__date">{{ post.created_at }}</div>
     </h1>
-    <div> {{ post.content }}</div>
-    <hr/>
+    <div class="post__content"> {{ post.content | markdown }}</div>
 </article>
 {% endfor %}
 {% endblock %}

@@ -53,7 +53,7 @@ def populate_db():
     db.commit()
     db.close()
 
-
+# TODO - Поискать встроенные классы, делающине из словаря объект
 class RowObject(object):
     """Table row object."""
     def __init__(self, row, columns):
@@ -72,7 +72,7 @@ def disconnect():
     if db is not None:
         db.close()
 
-
+# TODO - замена параметра single на отдельную функцию?
 def select(query, arguments=(), single=False, row_type='object'):
     """Select one or more rows from database."""
     cursor = g.db.cursor()
