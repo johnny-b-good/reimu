@@ -1,17 +1,21 @@
 {% extends 'blog.html' %}
 
 {% block content %}
-{% for post in posts %}
-<article class="post">
-    <h1 class="post__header">
-        <a class="post__link" href="{{ url_for('blog.post_page', post_id=post['pid']) }}">
-            {{ post.title }}
-        </a>
-        <div class="post__date">{{ post.created_at }}</div>
-    </h1>
-    <div class="post__content"> {{ post.content | markdown }}</div>
-</article>
-{% endfor %}
+<div class="content">
+    {% for post in posts %}
+    <article class="post">
+        <header class="post__header">
+            <h1 class="post__header-text">
+                <a class="post__link" href="{{ url_for('blog.post_page', post_id=post['pid']) }}">
+                    {{ post.title }}
+                </a>
+            </h1>
+            <div class="post__date">{{ post.created_at | ru_date}}</div>
+        </header>
+        <div class="post__content"> {{ post.content | markdown }}</div>
+    </article>
+    {% endfor %}
+</div>
 {% endblock %}
 
 

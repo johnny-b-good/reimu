@@ -5,20 +5,43 @@
 
 
 {% block content %}
-<article>
-    <h1>{{ post.title }}</h1>
+<div class="content">
+    <article class="post">
+        <header class="post__header">
+            <h1 class="post__header-text">
+                <a class="post__link" href="{{ url_for('blog.post_page', post_id=post['pid']) }}">
+                    {{ post.title }}
+                </a>
+            </h1>
+            <div class="post__date">{{ post.created_at | ru_date}}</div>
+        </header>
+        <div class="post__content"> {{ post.content | markdown }}</div>    
+        
+        <section class="post__comments">
+            <form action="" class="comment-form">
+                <label for="trap"><input id="trap" type="text"></label>
+                <label for="name">Имя:<input id="name" type="text"></label>
+                <label for="email">Почта: <input id="email" type="text"></label>
+                <label for="text">
+                    Ваш комментарий:
+                    <textarea name="" id="text"></textarea>
+                </label>
+            </form>
+            {% for comment in comments %}
+                <div class="comment">
+                    <div class="comment__header" data-cid="{{comment.cid}}">
+                        <a {% if comment.email %} href="mailto:{{comment.email | e}}" {% endif %} class="comment__author">{{ comment.author | e }}</a>
+                        @
+                        <span class="comment__date">{{comment.created_at | ru_date}}</span>
+                    </div>
+                    <div class="comment__content">
+                        {{ comment.content | e}}
+                    </div>
+                </div>
+            {% endfor %}
 
-    {{ post.content|markdown }}
+        </section>
 
-    <hr/>
-    <section>
-        {% for comment in comments %}
-            <b>{{ comment.author }}</b> :: {{ comment.content }}
-            <br/>
-            <br/>
-        {% endfor %}
-
-    </section>
-
-</article>
+    </article>
+</div>
 {% endblock %}

@@ -8,7 +8,9 @@
 
 <body>
     <header class="header">
-        <div class="header__inner">BLOG HEADER</div>
+        <div class="header__inner">
+            <a class="header__link" href="{{url_for('blog.index_page')}}">BLOG HEADER</a>
+        </div>
     </header>
 
     {% if session['is_admin'] %}
@@ -16,13 +18,11 @@
     {% endif %}
 
     <main class="main">
-        <div class="blog__content">
-            {% block content %}{% endblock %}
-        </div>
+        {% block content %}{% endblock %}
         {% block pagination %}{% endblock %}
     </main>
 
-    <footer>
+    <footer class="footer">
         BLOG FOOTER
     </footer>
 </body>

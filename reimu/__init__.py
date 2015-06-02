@@ -1,5 +1,6 @@
 from flask import Flask, Markup
 from markdown import markdown
+from datetime import datetime
 
 from reimu.blog import blog
 from reimu.admin import admin
@@ -24,3 +25,8 @@ app.register_blueprint(auth)
 @app.template_filter('markdown')
 def markdown_filter(data):
     return Markup(markdown(data))
+
+
+@app.template_filter('ru_date')
+def ru_date_filter(data):
+    return datetime.strptime(data, '%Y-%m-%d').strftime('%d.%m.%Y')
