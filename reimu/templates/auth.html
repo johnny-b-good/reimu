@@ -2,18 +2,25 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="{{ url_for('static', filename='lib/pure-0.5.0.css') }}"/>
     <link rel="stylesheet" href="{{ url_for('static', filename='auth.css') }}"/>
     <title>{% block title %}BLOG NAME{% endblock %}</title>
 </head>
 <body>
 
-test
 <form class="login-form" action="{{ url_for('auth.login') }}" method="post">
-    <input class="login-form__trap" name="trap" type="text"/>
-    <input class="login-form__user" name="user" type="text" placeholder="Пользователь"/>
-    <input class="login-form__password" name="password" type="password" placeholder="Пароль"/>
-    <button type="submit">Войти</button>
+    <div class="login-form__header">Авторизация</div>
+    <div class="login-form__el-wrap">
+        <input class="login-form__field login-form__field--trap" name="trap" type="text"/>
+    </div>
+    <div class="login-form__el-wrap">
+        <input class="login-form__field login-form__field--user" name="user" type="text" placeholder="Пользователь"/>
+    </div>
+    <div class="login-form__el-wrap">        
+        <input class="login-form__field login-form__field--password" name="password" type="password" placeholder="Пароль"/>
+    </div>
+    <div class="login-form__el-wrap">            
+        <button class="login-form__submit" type="submit">Войти</button>
+    </div>
 </form>
 
 </body>

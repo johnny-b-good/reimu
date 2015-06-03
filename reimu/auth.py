@@ -6,7 +6,10 @@ auth = Blueprint('auth', __name__)
 @auth.route('/login', methods=['GET'])
 def login_page():
     """Render the login page."""
-    return render_template('auth.html')
+    if session.get('is_admin', False):
+        return redirect(url_for('admin.posts_page'))
+    else:    
+        return render_template('auth.html')
 
 
 @auth.route('/login', methods=['POST'])
