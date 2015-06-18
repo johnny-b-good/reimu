@@ -19,13 +19,24 @@
         
         <section class="post__comments">
             <form action="" class="comment-form">
-                <label for="trap"><input id="trap" type="text"></label>
-                <label for="name">Имя:<input id="name" type="text"></label>
-                <label for="email">Почта: <input id="email" type="text"></label>
-                <label for="text">
-                    Ваш комментарий:
+                <input class="comment-form__trap" id="trap" type="text"></label>
+
+                <div class="comment-form__field-wrap">
+                    <label class="comment-form__label" for="name">Имя:</label>
+                    <input id="name" type="text">
+                </div>
+
+                <div class="comment-form__field-wrap">
+                    <label class="comment-form__label" for="email">Почта:</label>
+                    <input id="email" type="text">
+                </div>
+
+                <div class="comment-form__field-wrap">
+                    <label class="comment-form__label" for="text">Ваш комментарий:</label>
                     <textarea name="" id="text"></textarea>
-                </label>
+                </div>
+
+                <button class="comment-form__submit" type="submit">Войти</button>
             </form>
             {% for comment in comments %}
                 <div class="comment">
