@@ -2,6 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='common.css') }}"/>
     <link rel="stylesheet" href="{{ url_for('static', filename='auth.css') }}"/>
     <title>{% block title %}BLOG NAME{% endblock %}</title>
 </head>
@@ -9,17 +10,17 @@
 
 <form class="login-form" action="{{ url_for('auth.login') }}" method="post">
     <div class="login-form__header">Авторизация</div>
-    <div class="login-form__el-wrap">
+    <div class="login-form__field-wrap">
         <input class="login-form__field login-form__field--trap" name="trap" type="text"/>
     </div>
-    <div class="login-form__el-wrap">
-        <input class="login-form__field login-form__field--user" name="user" type="text" placeholder="Пользователь"/>
+    <div class="login-form__field-wrap">
+        <input class="login-form__field login-form__field--user textfield" name="user" type="text" placeholder="Пользователь"/>
     </div>
-    <div class="login-form__el-wrap">        
-        <input class="login-form__field login-form__field--password" name="password" type="password" placeholder="Пароль"/>
+    <div class="login-form__field-wrap">
+        <input class="login-form__field login-form__field--password textfield" name="password" type="password" placeholder="Пароль"/>
     </div>
-    <div class="login-form__el-wrap">            
-        <button class="login-form__submit" type="submit">Войти</button>
+    <div class="login-form__field-wrap">
+        <button class="login-form__submit button" type="submit">Войти</button>
     </div>
 </form>
 

@@ -21,7 +21,7 @@ def _generate_fake_text(paragraphs_num):
 def populate_db():
     """(Re)Populate blog's database with fake posts and comments.
 
-    This function shold be called from interactive shell.
+    This function should be called from interactive shell.
     """
 
     # Connect to the database

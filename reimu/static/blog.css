@@ -1,25 +1,10 @@
-/*@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,300&subset=latin,cyrillic);*/
-
 body {
-    font: 13px/20px "Open Sans", "Arial", sans-serif;
+    font: normal 14px/20px "Open Sans", "Arial", sans-serif;
     /*background: aliceblue;*/
     background: url("wavegrid.png") fixed;
     color: #333;
     width: 800px;
     margin: 0 auto;
-}
-
-* {
-    box-sizing: border-box;
-}
-
-a {
-    color: #1C4D73;
-}
-
-::selection {
-    background-color: #1C4D73;
-    color: #eee;
 }
 
 .is-admin {
@@ -79,7 +64,7 @@ a {
     margin: -20px -10px 10px -10px;
     padding: 10px;
     border-bottom: 1px dotted #ccc;
-    font: 20px/30px "Open Sans", "Arial", sans-serif;    
+    font: 20px/30px "Open Sans", "Arial", sans-serif;
 }
 
 .post__link {
@@ -146,7 +131,7 @@ a {
     line-height: 40px;
     font-size: 16px;
     padding: 0px 20px;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);    
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
 }
 
 .post__comments {
@@ -170,3 +155,38 @@ a {
 .comment__date {}
 
 .comment__content {}
+
+.comment-form {
+    /*width: 500px;*/
+}
+.comment-form__trap {
+    display: none;
+}
+.comment-form__label {
+    display: block;
+    float: left;
+    line-height: 30px;
+    width: 80px;
+    margin-right: 10px;
+    text-align: right;
+}
+.comment-form__field {
+  float: left;
+  /*vertical-align: top;*/
+}
+.comment-form__field--name {
+    width: 200px;
+}
+.comment-form__field--email {
+    width: 200px;
+}
+.comment-form__field--text {
+    width: 500px;
+    height: 200px;
+}
+.comment-form__field-wrap {
+    margin-bottom: 10px;
+}
+.comment-form__submit {
+    margin-left: 90px;
+}

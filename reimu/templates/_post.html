@@ -15,44 +15,50 @@
             </h1>
             <div class="post__date">{{ post.created_at | ru_date}}</div>
         </header>
-        <div class="post__content"> {{ post.content | markdown }}</div>    
-        
+
+        <div class="post__content"> {{ post.content | markdown }}</div>
+
         <section class="post__comments">
-            <form action="" class="comment-form">
+            <h1 class="post__comments-header">
+                Оставить комментарий
+            </h1>
+
+            <form action="" method="POST" class="comment-form">
                 <input class="comment-form__trap" id="trap" type="text"></label>
-
-                <div class="comment-form__field-wrap">
+                <div class="comment-form__field-wrap group">
                     <label class="comment-form__label" for="name">Имя:</label>
-                    <input id="name" type="text">
+                    <input id="name" type="text" class="comment-form__field comment-form__field--name textfield">
                 </div>
-
-                <div class="comment-form__field-wrap">
+                <div class="comment-form__field-wrap group">
                     <label class="comment-form__label" for="email">Почта:</label>
-                    <input id="email" type="text">
+                    <input id="email" type="text" class="comment-form__field comment-form__field--email textfield">
                 </div>
-
-                <div class="comment-form__field-wrap">
-                    <label class="comment-form__label" for="text">Ваш комментарий:</label>
-                    <textarea name="" id="text"></textarea>
+                <div class="comment-form__field-wrap group">
+                    <label class="comment-form__label" for="text">Текст:</label>
+                    <textarea name="text" class="comment-form__field comment-form__field--text textfield"></textarea>
                 </div>
-
-                <button class="comment-form__submit" type="submit">Войти</button>
+                <button class="comment-form__submit button" type="submit">Отправить</button>
             </form>
-            {% for comment in comments %}
-                <div class="comment">
-                    <div class="comment__header" data-cid="{{comment.cid}}">
-                        <a {% if comment.email %} href="mailto:{{comment.email | e}}" {% endif %} class="comment__author">{{ comment.author | e }}</a>
-                        @
-                        <span class="comment__date">{{comment.created_at | ru_date}}</span>
-                    </div>
-                    <div class="comment__content">
-                        {{ comment.content | e}}
-                    </div>
-                </div>
-            {% endfor %}
 
+            <h1 class="post__comments-header">
+                Комментарии
+            </h1>
+
+            <div class="posts__comment-list">
+              {% for comment in comments %}
+                  <article class="comment">
+                      <div class="comment__header" data-cid="{{comment.cid}}">
+                          <a {% if comment.email %} href="mailto:{{comment.email | e}}" {% endif %} class="comment__author">{{ comment.author | e }}</a>
+                          @
+                          <span class="comment__date">{{comment.created_at | ru_date}}</span>
+                      </div>
+                      <div class="comment__content">
+                          {{ comment.content | e}}
+                      </div>
+                  </article>
+              {% endfor %}
+            </div>
         </section>
-
     </article>
 </div>
 {% endblock %}
