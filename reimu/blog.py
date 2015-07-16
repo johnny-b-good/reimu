@@ -55,13 +55,18 @@ def post_page(post_id):
     # Fetch all comments for that post
     comments = reimu.db.select('SELECT * FROM Comments '
                                'WHERE pid=? '
-                               'ORDER BY created_at DESC;', (post_id,))
+                               'ORDER BY created_at DESC;',
+                               (post_id,))
 
     return render_template('_post.html', post=post, comments=comments)
 
 
 @blog.route('/comments', methods=['POST'])
 def create_comment():
+    """Add new commentary.
+
+    Available for everyone.
+    """
     pass
 
 

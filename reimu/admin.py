@@ -22,10 +22,6 @@ def teardown_request(exception):
 @admin.route('/admin/posts')
 @admin.route('/admin/posts/<int:post_id>')
 def posts_page(post_id=None):
-    # post_list = reimu.db.select('SELECT pid, title, created_at FROM Posts;')
-    # if not post_id:
-    #     latest_post = reimu.db.select('SELECT pid FROM Posts DESC LIMIT 1;')
-    #     post_id =
     return render_template('admin.html')
 
 

@@ -1,59 +1,15 @@
-from flask import g, current_app
-from faker import Factory
 import sqlite3
+import json
+
+from flask import g, current_app
 
 import reimu.config
-
-fake = Factory.create()
 
 
 def init_db():
     pass
 
 
-def _generate_fake_text(paragraphs_num):
-    """Generate fake post text."""
-    paragraphs = [fake.paragraph(nb_sentences=5) for _ in range(paragraphs_num)]
-    post_text = '\n\n'.join(paragraphs)
-    return post_text
-
-
-def populate_db():
-    """(Re)Populate blog's database with fake posts and comments.
-
-    This function should be called from interactive shell.
-    """
-
-    # Connect to the database
-    db = sqlite3.connect(reimu.config.DATABASE)
-    cursor = db.cursor()
-
-    # Clear tables
-    cursor.execute('DELETE FROM Comments;')
-    cursor.execute('DELETE FROM Posts;')
-
-    # Create and insert posts (30)
-    posts_query = (
-        'INSERT INTO Posts (pid, title, content, created_at, updated_at, is_published) '
-        'VALUES (?, ?, ?, ?, ?, ?);')
-    posts_values = [
-        (i, fake.sentence(), _generate_fake_text(7), fake.date(), None, True)
-        for i in range(30)]
-    cursor.executemany(posts_query, posts_values)
-
-    # Create and insert comments (10 comments per post - 300)
-    comments_query = ('INSERT INTO Comments (cid, pid, author, email, created_at, content) '
-                      'VALUES (?, ?, ?, ?, ?, ?);')
-    comments_values = [
-        (i, i//10, fake.name(), fake.email(), fake.date(), fake.paragraph())
-        for i in range(300)]
-    cursor.executemany(comments_query, comments_values)
-
-    # Execute statements and close connection
-    db.commit()
-    db.close()
-
-# TODO - Поискать встроенные классы, делающине из словаря объект
 class RowObject(object):
     """Table row object."""
     def __init__(self, row, columns):
@@ -72,7 +28,7 @@ def disconnect():
     if db is not None:
         db.close()
 
-# TODO - замена параметра single на отдельную функцию?
+
 def select(query, arguments=(), single=False, row_type='object'):
     """Select one or more rows from database."""
     cursor = g.db.cursor()
@@ -80,16 +36,17 @@ def select(query, arguments=(), single=False, row_type='object'):
     rows = cursor.fetchall()
 
     # Convert rows to desired type
-    column_names = [col[0] for col in cursor.description]
+    columns = [col[0] for col in cursor.description]
     if row_type == 'object':
-        rows = [RowObject(row, column_names) for row in rows]
+        rows = [RowObject(row, columns) for row in rows]
     elif row_type == 'dict':
-        rows = [dict(zip(column_names, row)) for row in rows]
+        rows = [dict(zip(columns, row)) for row in rows]
 
+    # Unpack list if needed
     if single:
         return rows[0] if len(rows) else None
     else:
-        return rows
+        return rows if len(rows) else []
 
 
 def count(table):
