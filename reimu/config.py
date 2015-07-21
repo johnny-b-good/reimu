@@ -6,4 +6,4 @@ SECRET_KEY = 'elpsycongroo'
 USER = 'admin'
 PASSWORD = 'admin'
 
-BLOG_NAME = 'THE GREAT CORHNHOLIO'
+BLOG_NAME = 'Eastwestern Wonderland'
