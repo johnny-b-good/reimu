@@ -19,8 +19,9 @@ def teardown_request(exception):
 
 
 @admin.route('/admin')
-@admin.route('/admin/posts')
-@admin.route('/admin/posts/<int:post_id>')
+# @admin.route('/admin/posts')
+# @admin.route('/admin/posts/new')
+# @admin.route('/admin/posts/<int:post_id>')
 def posts_page(post_id=None):
     return render_template('admin.html')
 

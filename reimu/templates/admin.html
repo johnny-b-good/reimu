@@ -15,32 +15,43 @@
 
 <div class="templates">
     <script type="text/template" class="list-template">
-        <div class="list__header">
-            <button class="list__new">Новая запись</button>
+        <div class="list">
+            <div class="list__header">
+                <a class="list__new button button--blue" href="#posts/new">Новая запись</a>
+            </div>
+            <ul class="list__items">
+                <% posts.each(function(post){ %>
+                    <li class="list__item">
+                        <a href="<%= post.postUrl() %>" class="list__item-link" data-pid="<%= post.get('pid') %>">
+                            <%= post.get('created_at') %> :: <%= post.get('title') %>
+                        </a>
+                    </li>
+                <% }); %>
+            </ul>
         </div>
-        <ul class="list__items">
-            <% posts.each(function(post){ %>
-                <li class="list__item">
-                    <a href="<%= post.url() %>" class="list__item-link" data-pid="<%= post.get('pid') %>">
-                        <%= post.get('created_at') %> :: <%= post.get('title') %>
-                    </a>
-                </li>
-            <% }); %>
-        </ul>
     </script>
 
     <script type="text/template" class="editor-template">
-        <form class="editor__form">
-            <div class="editor__header">
-                <input type="text" class="editor__created-at" name="created_at" value="<%= created_at %>">
-                <div class="editor__slash">/</div>
-                <input type="text" class="editor__title" name="title" value="<%= title %>">
-            </div>
-            <textarea class="editor__content" name="content"><%= content %></textarea>
-            <div class="editor__footer">
-                <button class="editor__save">Сохранить</button>
-            </div>
-        </form>
+        <div class="editor">
+            <form class="editor__form">
+                <div class="editor__header">
+                    <label for="created_at" class="editor__label editor__label--title">
+                        <span class="editor__label-text">Заголовок</span>
+                        <input type="text" class="editor__title textfield textfield--blue" name="title" value="<%= title %>" placeholder="">
+                    </label>
+                    <label for="created_at" class="editor__label editor__label--date">
+                        <span class="editor__label-text">Дата</span>
+                        <input type="text" class="editor__created-at textfield textfield--blue" name="created_at" value="<%= created_at %>" placeholder="<%= created_at %>">
+                    </label>
+                </div>
+                <textarea class="editor__content textfield textfield--blue" name="content"><%= content %></textarea>
+                <div class="editor__footer">
+                    <button class="editor__save button button--blue">Сохранить</button>
+                    <span class="editor__unsaved">ОТРЕДАКТИРОВАНО</span>
+                    <a class="editor__cancel button" href="#posts">Назад</a>
+                </div>
+            </form>
+        </div>
     </script>
 </div>
 

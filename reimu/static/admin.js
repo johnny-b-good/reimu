@@ -1,12 +1,21 @@
+function onAnyError(){
+    console.error('ERROR:', arguments);
+    alert('Ошибка!!');
+}
+
+
 var PostModel = Backbone.Model.extend({
     idAttribute: 'pid',
     defaults: {
-        pid: null,
+        pid: '',
         title: '',
         content: '',
         created_at: '',
         updated_at: '',
         is_published: false
+    },
+    postUrl: function(){
+        return '#posts/' + this.get('pid')
     },
     urlRoot: '/admin/api/posts'
 });
@@ -19,20 +28,13 @@ var PostsCollection = Backbone.Collection.extend({
 
 
 var Router = Backbone.Router.extend({
-    initialize: function(opt){},
     routes: {
-        '(:pid)(/)': 'post'
-    },
-    open: function(pid){
-        this.navigate(pid, {trigger: true});
+        'posts/new(/)': 'post_edit',
+        'posts/:pid(/)': 'post_edit',
+        'posts(/)': 'post_list',
+        '': 'post_list'
     }
 });
-
-
-function onAnyError(){
-    console.error('ERROR:', arguments);
-    alert('Ошибка!!');
-}
 
 
 var ListView = Backbone.View.extend({
@@ -42,9 +44,7 @@ var ListView = Backbone.View.extend({
 
     template: _.template($('.list-template').text()),
 
-    events: {
-        'click .list__item-link': 'onItemClick'
-    },
+    events: {},
 
     render: function(){
         this.$el.html(
@@ -61,22 +61,14 @@ var ListView = Backbone.View.extend({
         this.locked = state;
     },
 
-    onItemClick: function(ev){
-        ev.preventDefault();
-        if (!this.locked){
-            var pid = String($(ev.target).data('pid'));
-            this.trigger('open', pid);
-        }
-    },
-
     markCurrent: function(pid){}
 });
 
 
 var EditorView = Backbone.View.extend({
     initialize: function(opt){
-        _.bindAll(this, 'render', 'onEdit');
-        this.onEditDebounced = _.debounce(this.onEdit, 5000);
+        _.bindAll(this, 'render', 'onSaveSuccess');
+        this.unsaved = false;
     },
 
     template: _.template($('.editor-template').html()),
@@ -84,7 +76,7 @@ var EditorView = Backbone.View.extend({
     events: {
         'submit': 'onSubmit',
         'click .editor__save': 'onSaveButtonClick',
-        'input': 'onEditDebounced'
+        'input': 'onInput'
     },
 
     render: function(){
@@ -100,31 +92,44 @@ var EditorView = Backbone.View.extend({
             this.model.fetch().done(this.render).fail(onAnyError);
         }
         else {
-            this.model = new PostModel({});
+            // var today = new Date();
+            this.model = new PostModel({
+                // created_at: today.getDate() + '.' + today.getMonth() + '.' + today.getFullYEar()
+            });
             this.render();
         }
+    },
+
+    onInput: function(ev) {
+        this.toggleUnsaved(true);
     },
 
     onSubmit: function(ev){
         ev.preventDefault();
     },
 
-    onEdit: function(){
-        this.model
-            .save({
-                title: this.$('.editor__title').val(),
-                content: this.$('.editor__content').val(),
-                created_at: this.$('.editor__created-at').val(),
-                is_published: this.$('.editor__is-published').is(':checked')
-            })
-            .fail(onAnyError);
+    onSaveSuccess: function(){
+        this.toggleUnsaved(false);
+    },
+
+    toggleUnsaved: function(state){
+        this.unsaved = state;
+        this.$el.find('.editor__unsaved').toggleClass('editor__unsaved--visible', state);
+        this.$el.find('.editor__save').toggleClass('editor__save--visible', state);
+        this.$el.find('.editor__cancel').text(state ? 'Отмена' : 'Назад');
     },
 
     onSaveButtonClick: function(){
-        this.model.save().fail(onAnyError);
-    },
-
-    onCancelButtonClick: function(){},
+      this.model
+          .save({
+              title: this.$('.editor__title').val(),
+              content: this.$('.editor__content').val(),
+              created_at: this.$('.editor__created-at').val(),
+              is_published: this.$('.editor__is-published').is(':checked')
+          })
+          .done(this.onSaveSuccess)
+          .fail(onAnyError);
+    }
 });
 
 
@@ -138,33 +143,65 @@ var MainView = Backbone.View.extend({
 
         // Initialize posts list
         this.list = new ListView({
-            el: this.$('.list'),
+            el: this.$('.admin'),
             collection: this.posts
         });
 
         // Intialize editor
         this.editor = new EditorView({
-            el: this.$('.editor'),
+            el: this.$('.admin'),
             model: this.currentPost
         });
 
         // Configure router
         this.router = new Router({});
-        this.list.listenTo(this.router, 'route:post', this.list.update);
-        this.editor.listenTo(this.router, 'route:post', this.editor.update);
+
+        // Configure navigation handlers
+        // Should be done before `Backbone.history.start` to itercept nav events
+        _.bindAll(this, 'onWindowHashChange', 'onWindowBeforeUnload');
+        this.cancelNavigate = false;
+        this.confirmationMessage = 'Есть несохраненные изменения. Покинуть страницу?';
+        $(window).on('hashchange', this.onWindowHashChange);
+        $(window).on('beforeunload', this.onWindowBeforeUnload);
+
+        // Configure routes
+        this.list.listenTo(this.router, 'route:post_list', this.list.update);
+        this.editor.listenTo(this.router, 'route:post_edit', this.editor.update);
+
+        // Start routing
         Backbone.history.start({
-            root: '/admin/posts',
-            pushState: true
+            root: '/admin'
         });
+    },
 
-        // Connect object events listeners
-        this.router.listenTo(this.list, 'open', this.router.open);
-        // this.list.listenTo(this.editor, 'edit', this.list.setLock);
+    onWindowHashChange: function(ev){
+        // Do not cancel navigation if there are no unsaved changes in editor
+        if (!this.editor.unsaved) return;
 
+        // Prevent navigate events when going back to previous url
+        if (this.cancelNavigate) {
+      	     ev.stopImmediatePropagation();
+             this.cancelNavigate = false;
+             return;
+      	}
 
-        // $(window).on('beforeunload', function(){
-        //     return "А может нинада?";
-        // });
+        // Ask user's confirmation on leaving unsaved editor
+        var dialog = confirm(this.confirmationMessage);
+        if (dialog) {
+            // Continue navigation if user agrees
+            this.editor.unsaved = false;
+        } else {
+            // Prevent nav event
+            ev.stopImmediatePropagation();
+            // Prevent navigate events when going back to previous url
+            this.cancelNavigate = true;
+            // Go to the previous url
+            window.location.href = ev.originalEvent.oldURL;
+        }
+    },
+
+    onWindowBeforeUnload: function(){
+        if (this.editor.unsaved) return this.confirmationMessage;
     }
 });
 
