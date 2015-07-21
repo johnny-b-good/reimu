@@ -5,3 +5,5 @@ SECRET_KEY = 'elpsycongroo'
 
 USER = 'admin'
 PASSWORD = 'admin'
+
+BLOG_NAME = 'THE GREAT CORHNHOLIO'
