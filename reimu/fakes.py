@@ -31,7 +31,14 @@ def populate_db():
         'INSERT INTO Posts (pid, title, content, created_at, updated_at, is_published) '
         'VALUES (?, ?, ?, ?, ?, ?);')
     posts_values = [
-        (i, fake.sentence(), _generate_fake_text(7), fake.date(), None, True)
+        (
+            i,  # pid
+            fake.sentence(),  # title
+            _generate_fake_text(7),  # content
+            fake.date(), # created_at
+            None,  # updated_at
+            True  # is_published
+        )
         for i in range(30)]
     cursor.executemany(posts_query, posts_values)
 
@@ -39,7 +46,14 @@ def populate_db():
     comments_query = ('INSERT INTO Comments (cid, pid, author, email, created_at, content) '
                       'VALUES (?, ?, ?, ?, ?, ?);')
     comments_values = [
-        (i, i//10, fake.name(), fake.email(), fake.date(), fake.paragraph())
+        (
+            i,  # cid
+            i//10,  # pid
+            fake.name(),  # author
+            fake.email(),  # email
+            fake.date(),  # created_at
+            fake.paragraph()  # content
+        )
         for i in range(300)]
     cursor.executemany(comments_query, comments_values)
 

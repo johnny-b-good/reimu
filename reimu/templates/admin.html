@@ -19,12 +19,21 @@
             <div class="list__header">
                 <a class="list__new button button--blue" href="#posts/new">Новая запись</a>
             </div>
-            <ul class="list__items">
-                <% posts.each(function(post){ %>
-                    <li class="list__item">
-                        <a href="<%= post.postUrl() %>" class="list__item-link" data-pid="<%= post.get('pid') %>">
-                            <%= post.get('created_at') %> :: <%= post.get('title') %>
-                        </a>
+            <ul class="list__groups">
+                <% _.forEach(groups, function(group){ %>
+                    <li class="list__group">
+                        <h1 class="list__group-header">
+                            <%= group.monthYear || 'Без даты' %>
+                        </h1>
+                        <ul class="list__items">
+                            <% _.forEach(group.posts, function(post){ %>
+                                <li class="list__item">
+                                    <a href="<%= post.postUrl() %>" class="list__item-link" data-pid="<%= post.get('pid') %>">
+                                        <%= post.get('created_at') %> :: <%= post.get('title') %>
+                                    </a>
+                                </li>
+                            <% }); %>
+                        </ul>
                     </li>
                 <% }); %>
             </ul>

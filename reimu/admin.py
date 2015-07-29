@@ -1,9 +1,23 @@
-from flask import Blueprint, g, render_template, abort, redirect, url_for, request, current_app, session, jsonify, Response
 import json
+from datetime import datetime
+
+from flask import Blueprint, g, render_template, abort, redirect, url_for, request, current_app, session, jsonify, Response
 
 import reimu.db
 
 admin = Blueprint('admin', __name__)
+
+
+def convert_date(date, direction):
+    try:
+        if direction == 'us_to_ru':
+            return datetime.strptime(date, '%Y-%m-%d').strftime('%d.%m.%Y')
+        elif direction == 'ru_to_us':
+            return datetime.strptime(date, '%d.%m.%Y').strftime('%Y-%m-%d')
+        else:
+            return None
+    except ValueError:
+        return None
 
 
 @admin.before_request
@@ -29,6 +43,9 @@ def posts_list():
         'SELECT pid, title, created_at, updated_at, is_published FROM Posts '
         'ORDER BY created_at DESC;',
         row_type='dict')
+
+    for p in posts:
+        p['created_at'] = convert_date(p['created_at'], 'us_to_ru')
 
     return Response(json.dumps(posts), mimetype='application/json')
 
@@ -57,6 +74,8 @@ def read_post(post_id=None):
 
     if not post:
         abort(404)
+
+    post['created_at'] = convert_date(post['created_at'], 'us_to_ru')
 
     return jsonify(post)
 

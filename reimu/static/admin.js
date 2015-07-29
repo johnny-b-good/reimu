@@ -6,6 +6,7 @@ function onAnyError(){
 
 var PostModel = Backbone.Model.extend({
     idAttribute: 'pid',
+    urlRoot: '/admin/api/posts',
     defaults: {
         pid: '',
         title: '',
@@ -14,10 +15,31 @@ var PostModel = Backbone.Model.extend({
         updated_at: '',
         is_published: false
     },
+    private: ['_month', '_year', '_monthYear'],
+    initialize: function(attributes, options){
+        this.setDateParams(this.get('created_at'));
+        this.on('change:created_at', function(model, createdAt){
+            this.setDateParams(createdAt);
+        }, this);
+    },
+    setDateParams: function(createdAt){
+        console.log('BONK!');
+        var monthNames = {
+            '01': 'Январь', '02': 'Февраль', '03': 'Март', '04': 'Апрель', '05': 'Май', '06': 'Июнь',
+            '07': 'Июль', '08': 'Август', '09': 'Сентябрь', '10': 'Октябрь', '11': 'Ноябрь', '12': 'Декабрь'
+        };
+        if (!createdAt) return;
+        var dateArray = createdAt.split('.');
+        var year = dateArray[2];
+        var month = dateArray[1];
+        var monthName = monthNames[month];
+        var monthYear = monthName + ' ' + year;
+
+        this.set({_month: month, _year: year, _monthYear: monthYear});
+    },
     postUrl: function(){
         return '#posts/' + this.get('pid')
-    },
-    urlRoot: '/admin/api/posts'
+    }
 });
 
 
@@ -48,7 +70,7 @@ var ListView = Backbone.View.extend({
 
     render: function(){
         this.$el.html(
-            this.template({posts: this.collection})
+            this.template({groups: this.groupCollection()})
         );
         return this;
     },
@@ -61,7 +83,21 @@ var ListView = Backbone.View.extend({
         this.locked = state;
     },
 
-    markCurrent: function(pid){}
+    markCurrent: function(pid){},
+
+    groupCollection: function(){
+        var groupedCollection = [];
+        var table = {};
+        this.collection.each(function(model, index, list){
+            var group = model.get('_monthYear');
+            if (!table.hasOwnProperty(group)) {
+                table[group] = [];
+                groupedCollection.push({monthYear: group, posts: table[group]});
+            }
+            table[group].push(model);
+        });
+        return groupedCollection;
+    }
 });
 
 

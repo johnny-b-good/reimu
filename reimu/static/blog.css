@@ -86,8 +86,8 @@ body {
     line-height: normal;
     top: 30px;
     bottom: -20px;
-    border-top-right-radius: 3px;
-    border-bottom-right-radius: 3px;
+    /*border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;*/
     white-space: nowrap;
 }
 
