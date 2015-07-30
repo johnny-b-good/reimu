@@ -6,24 +6,28 @@ function onAnyError(){
 
 var PostModel = Backbone.Model.extend({
     idAttribute: 'pid',
+
     urlRoot: '/admin/api/posts',
+
     defaults: {
-        pid: '',
+        pid: undefined,
         title: '',
         content: '',
         created_at: '',
         updated_at: '',
         is_published: false
     },
+
     private: ['_month', '_year', '_monthYear'],
+
     initialize: function(attributes, options){
         this.setDateParams(this.get('created_at'));
         this.on('change:created_at', function(model, createdAt){
             this.setDateParams(createdAt);
         }, this);
     },
+
     setDateParams: function(createdAt){
-        console.log('BONK!');
         var monthNames = {
             '01': 'Январь', '02': 'Февраль', '03': 'Март', '04': 'Апрель', '05': 'Май', '06': 'Июнь',
             '07': 'Июль', '08': 'Август', '09': 'Сентябрь', '10': 'Октябрь', '11': 'Ноябрь', '12': 'Декабрь'
@@ -37,8 +41,13 @@ var PostModel = Backbone.Model.extend({
 
         this.set({_month: month, _year: year, _monthYear: monthYear});
     },
+
     postUrl: function(){
         return '#posts/' + this.get('pid')
+    },
+
+    toJSON: function(){
+        return this.omit.apply(this, this.private);
     }
 });
 
@@ -103,7 +112,7 @@ var ListView = Backbone.View.extend({
 
 var EditorView = Backbone.View.extend({
     initialize: function(opt){
-        _.bindAll(this, 'render', 'onSaveSuccess');
+        _.bindAll(this, 'render', 'onSaveSuccess', 'onSaveError');
         this.unsaved = false;
     },
 
@@ -128,15 +137,28 @@ var EditorView = Backbone.View.extend({
             this.model.fetch().done(this.render).fail(onAnyError);
         }
         else {
-            // var today = new Date();
             this.model = new PostModel({
-                // created_at: today.getDate() + '.' + today.getMonth() + '.' + today.getFullYEar()
+                created_at: this.getTodayDate()
             });
             this.render();
         }
     },
 
+    getTodayDate: function(){
+        var today = new Date();
+        var month = ((today.getMonth() + 1) >= 10) ? (today.getMonth() + 1) : ('0' + (today.getMonth() + 1))
+        var day = (today.getDate() >= 10) ? today.getDate() : ('0' + today.getMonth());
+        var year = today.getFullYear();
+        return day + '.' + month + '.' + year;
+    },
+
     onInput: function(ev) {
+        var formFieldsArray = this.$('.editor__form').serializeArray();
+        var formFields = {};
+        _.forEach(formFieldsArray, function(el){
+            formFields[el.name] = el.value;
+        });
+        this.model.set(formFields);
         this.toggleUnsaved(true);
     },
 
@@ -146,6 +168,19 @@ var EditorView = Backbone.View.extend({
 
     onSaveSuccess: function(){
         this.toggleUnsaved(false);
+    },
+
+    onSaveError: function(res){
+        // Handle data errors
+        if (res.status === 422) {
+            var errorText = res.responseJSON.error;
+            alert(errorText);
+        }
+        // Handle any other errors
+        else {
+            onAnyError.apply(this, arguments);
+        }
+
     },
 
     toggleUnsaved: function(state){
@@ -164,7 +199,7 @@ var EditorView = Backbone.View.extend({
               is_published: this.$('.editor__is-published').is(':checked')
           })
           .done(this.onSaveSuccess)
-          .fail(onAnyError);
+          .fail(this.onSaveError);
     }
 });
 
@@ -173,9 +208,6 @@ var MainView = Backbone.View.extend({
     initialize: function(opt){
         // Posts collection
         this.posts = new PostsCollection();
-
-        // Current post model storage
-        this.currentPost = new PostModel({});
 
         // Initialize posts list
         this.list = new ListView({
@@ -186,7 +218,7 @@ var MainView = Backbone.View.extend({
         // Intialize editor
         this.editor = new EditorView({
             el: this.$('.admin'),
-            model: this.currentPost
+            model: new PostModel({})
         });
 
         // Configure router
