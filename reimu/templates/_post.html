@@ -20,44 +20,46 @@
 
         <section class="post__comments">
             <h1 class="post__comments-header">
-                Оставить комментарий
+                Комментарии ({{comments | length}})
+                {# <button class="button post__comments-new">Комментировать</button>#}
             </h1>
 
-            <form action="" method="POST" class="comment-form">
+            <form action="{{ url_for('blog.create_comment') }}" method="POST" class="comment-form group">
                 <input class="comment-form__trap" id="trap" type="text"></label>
+
+                <textarea name="text" class="comment-form__field comment-form__field--text textfield" placeholder="Текст комментария"></textarea>
+
                 <div class="comment-form__field-wrap group">
                     <label class="comment-form__label" for="name">Имя:</label>
                     <input id="name" type="text" class="comment-form__field comment-form__field--name textfield">
-                </div>
-                <div class="comment-form__field-wrap group">
+
                     <label class="comment-form__label" for="email">Почта:</label>
                     <input id="email" type="text" class="comment-form__field comment-form__field--email textfield">
+
+                    <button class="comment-form__submit button" type="submit">Отправить</button>
                 </div>
-                <div class="comment-form__field-wrap group">
-                    <label class="comment-form__label" for="text">Текст:</label>
-                    <textarea name="text" class="comment-form__field comment-form__field--text textfield"></textarea>
-                </div>
-                <button class="comment-form__submit button" type="submit">Отправить</button>
             </form>
 
-            <h1 class="post__comments-header">
-                Комментарии
-            </h1>
-
-            <div class="posts__comment-list">
-              {% for comment in comments %}
-                  <article class="comment">
-                      <div class="comment__header" data-cid="{{comment.cid}}">
-                          <a {% if comment.email %} href="mailto:{{comment.email | e}}" {% endif %} class="comment__author">{{ comment.author | e }}</a>
-                          @
-                          <span class="comment__date">{{comment.created_at | ru_date}}</span>
-                      </div>
-                      <div class="comment__content">
-                          {{ comment.content | e}}
-                      </div>
-                  </article>
-              {% endfor %}
-            </div>
+            {% if comments %}
+                <div class="post__comments-list">
+                  {% for comment in comments %}
+                      <article class="comment" data-cid="{{comment.cid}}">
+                          <div class="comment__header">
+                              <a {% if comment.email %} href="mailto:{{comment.email | e}}" {% endif %} class="comment__author">{{ comment.author | e }}</a>
+                              @
+                              <span class="comment__date">{{comment.created_at | ru_date}}</span>
+                          </div>
+                          <div class="comment__content">
+                              {{ comment.content | e}}
+                          </div>
+                      </article>
+                  {% endfor %}
+                </div>
+            {% else %}
+                <div class="post__comments-none">
+                    Комментариев пока нет.
+                </div>
+            {% endif %}
         </section>
     </article>
 </div>

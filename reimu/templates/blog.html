@@ -10,12 +10,12 @@
 <body>
     <header class="header">
         <div class="header__inner">
-            <a class="header__link" href="{{url_for('blog.index_page')}}">BLOG HEADER</a>
+            <a class="header__link" href="{{url_for('blog.index_page')}}">{{config.BLOG_NAME}}</a>
         </div>
     </header>
 
     {% if session['is_admin'] %}
-        <div class="is-admin">ОДМИН</div>
+        <div class="is-admin">Админ</div>
     {% endif %}
 
     <main class="main">
@@ -26,5 +26,9 @@
     <footer class="footer">
         BLOG FOOTER
     </footer>
+
+    <div class="scripts">
+        <script src="{{ url_for('static', filename='blog.js') }}"></script>
+    </div>
 </body>
 </html>

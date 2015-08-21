@@ -19,6 +19,9 @@ CREATE TABLE Comments (
   email TEXT,
   created_at DATETIME,
   content TEXT,
+  user_agent TEXT,
+  ip_address TEXT,
+  is_admin BOOLEAN
 
   FOREIGN KEY(pid) REFERENCES Posts(pid)
 );

@@ -1,8 +1,20 @@
-from faker import Factory
 import sqlite3
+import random
+
+from faker import Factory
 
 
 fake = Factory.create()
+
+
+def value_or_none(value, chance):
+    """Randomly return specified value or None."""
+    dice = random.randint(0, 100)
+    if dice <= chance:
+        return value
+    else:
+        return None
+
 
 
 def _generate_fake_text(paragraphs_num):
@@ -27,9 +39,10 @@ def populate_db():
     cursor.execute('DELETE FROM Posts;')
 
     # Create and insert posts (30)
-    posts_query = (
-        'INSERT INTO Posts (pid, title, content, created_at, updated_at, is_published) '
-        'VALUES (?, ?, ?, ?, ?, ?);')
+    posts_query = ("""
+        INSERT INTO Posts (pid, title, content, created_at, updated_at, is_published)
+        VALUES (?, ?, ?, ?, ?, ?);
+    """)
     posts_values = [
         (
             i,  # pid
@@ -43,16 +56,21 @@ def populate_db():
     cursor.executemany(posts_query, posts_values)
 
     # Create and insert comments (10 comments per post - 300)
-    comments_query = ('INSERT INTO Comments (cid, pid, author, email, created_at, content) '
-                      'VALUES (?, ?, ?, ?, ?, ?);')
+    comments_query = ("""
+        INSERT INTO Comments (cid, pid, author, email, created_at, content, user_agent, ip_address, is_admin)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+    """)
     comments_values = [
         (
             i,  # cid
             i//10,  # pid
             fake.name(),  # author
-            fake.email(),  # email
+            value_or_none(fake.free_email(), 30),  # email
             fake.date(),  # created_at
-            fake.paragraph()  # content
+            fake.paragraph(),  # content
+            fake.user_agent(),  # user_agent
+            fake.ipv4(),  # ip_address
+            random.choice([True, False]) #is_admin
         )
         for i in range(300)]
     cursor.executemany(comments_query, comments_values)
