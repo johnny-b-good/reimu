@@ -17,6 +17,7 @@
     <script type="text/template" class="list-template">
         <div class="list">
             <div class="list__header">
+                <input type="text" class="list__filter textfield textfield--blue" name="filter" value="" placeholder="Фильтровать..."/>
                 <a class="list__new button button--blue" href="#posts/new">Новая запись</a>
             </div>
             <ul class="list__groups">
@@ -27,7 +28,7 @@
                         </h1>
                         <ul class="list__items">
                             <% _.forEach(group.posts, function(post){ %>
-                                <li class="list__item">
+                                <li class="list__item" data-pid="<%= post.get('pid') %>">
                                     <a href="<%= post.postUrl() %>" class="list__item-link" data-pid="<%= post.get('pid') %>">
                                         <%= post.get('created_at') %> :: <%= post.get('title') %>
                                     </a>

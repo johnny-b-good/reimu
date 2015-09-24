@@ -70,16 +70,19 @@ var Router = Backbone.Router.extend({
 
 var ListView = Backbone.View.extend({
     initialize: function(opt){
-        _.bindAll(this, 'render');
+        _.bindAll(this, 'render', 'filter');
+        this.filterThrottled = _.throttle(this.filter, 1000);
     },
 
     template: _.template($('.list-template').text()),
 
-    events: {},
+    events: {
+        'input': 'filterThrottled'
+    },
 
     render: function(){
         this.$el.html(
-            this.template({groups: this.groupCollection()})
+            this.template({groups: this.makeGroups(this.collection)})
         );
         return this;
     },
@@ -94,10 +97,10 @@ var ListView = Backbone.View.extend({
 
     markCurrent: function(pid){},
 
-    groupCollection: function(){
+    makeGroups: function(collection){
         var groupedCollection = [];
         var table = {};
-        this.collection.each(function(model, index, list){
+        collection.each(function(model, index, list){
             var group = model.get('_monthYear');
             if (!table.hasOwnProperty(group)) {
                 table[group] = [];
@@ -106,6 +109,27 @@ var ListView = Backbone.View.extend({
             table[group].push(model);
         });
         return groupedCollection;
+    },
+
+    filter: function(ev){
+        var filterString = this.$('.list__filter').val();
+        var hiddenPosts = [];
+        this.collection.each(function(post){
+            var titleMatches = false;
+            var dateMatches = false;
+            if (post.get('title')){
+                dateMatches = post.get('title').search(filterString) !== -1;
+            }
+            if (post.get('created_at')){
+                titleMatches = post.get('created_at').search(filterString) !== -1;
+            }
+            if (!(titleMatches || dateMatches)) {
+                // hiddenPosts.push(post.get('pid'));
+                this.find('.list-item[' +  + ']');
+            };
+        });
+
+        console.log(filterString, hiddenPosts);
     }
 });
 

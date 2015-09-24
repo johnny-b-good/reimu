@@ -90,12 +90,19 @@ body {
 .list__header {
   position: absolute;
   height: 70px;
-  width: 100%;
+  /*width: 100%;*/
   top: 0;
-  padding-top: 20px;
+  padding: 20px 20px 0;
+  left: 0;
+  right: 0;
 }
 
 .list__new {
+    float: right;
+}
+
+.list__filter {
+    width: 300px;
 }
 
 
