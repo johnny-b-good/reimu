@@ -47,9 +47,13 @@ body {
 .list__group {
     padding-bottom: 9px;
     border-bottom: 1px solid #ddd;
+    transition: opacity 0.5s ease;
 }
 .list__group:last-child {
     border-bottom: none;
+}
+.list__group--hidden {
+    opacity: 0;
 }
 
 .list__group-header {
@@ -66,6 +70,11 @@ body {
 
 .list__item {
     list-style: none;
+    transition: opacity 0.5s ease;
+}
+
+.list__item--hidden {
+    opacity: 0;
 }
 
 /*.list__item:nth-child(2n+1) {

@@ -43,7 +43,7 @@ var PostModel = Backbone.Model.extend({
     },
 
     postUrl: function(){
-        return '#posts/' + this.get('pid')
+        return '#posts/' + this.get('pid');
     },
 
     toJSON: function(){
@@ -71,7 +71,7 @@ var Router = Backbone.Router.extend({
 var ListView = Backbone.View.extend({
     initialize: function(opt){
         _.bindAll(this, 'render', 'filter');
-        this.filterThrottled = _.throttle(this.filter, 1000);
+        this.filterThrottled = _.throttle(this.filter, 500);
     },
 
     template: _.template($('.list-template').text()),
@@ -113,23 +113,28 @@ var ListView = Backbone.View.extend({
 
     filter: function(ev){
         var filterString = this.$('.list__filter').val();
-        var hiddenPosts = [];
+        // var hiddenPosts = [];
         this.collection.each(function(post){
             var titleMatches = false;
             var dateMatches = false;
+            // TODO - в поиске игнорить регистр, сделать регуляркой
+            // Search by title
             if (post.get('title')){
-                dateMatches = post.get('title').search(filterString) !== -1;
+                 titleMatches = post.get('title').search(filterString) !== -1;
             }
+            // Search by date
             if (post.get('created_at')){
-                titleMatches = post.get('created_at').search(filterString) !== -1;
+                dateMatches = post.get('created_at').search(filterString) !== -1;
             }
+            // Hide unmatching elements
             if (!(titleMatches || dateMatches)) {
                 // hiddenPosts.push(post.get('pid'));
-                this.find('.list-item[' +  + ']');
-            };
+                this.$('.list__item[data-pid=' + post.get('pid') + ']').addClass('list__item--hidden');
+            }
+            else {
+                this.$('.list__item[data-pid=' + post.get('pid') + ']').removeClass('list__item--hidden');
+            }
         });
-
-        console.log(filterString, hiddenPosts);
     }
 });
 
@@ -170,7 +175,7 @@ var EditorView = Backbone.View.extend({
 
     getTodayDate: function(){
         var today = new Date();
-        var month = ((today.getMonth() + 1) >= 10) ? (today.getMonth() + 1) : ('0' + (today.getMonth() + 1))
+        var month = ((today.getMonth() + 1) >= 10) ? (today.getMonth() + 1) : ('0' + (today.getMonth() + 1));
         var day = (today.getDate() >= 10) ? today.getDate() : ('0' + today.getMonth());
         var year = today.getFullYear();
         return day + '.' + month + '.' + year;
@@ -272,10 +277,10 @@ var MainView = Backbone.View.extend({
 
         // Prevent navigate events when going back to previous url
         if (this.cancelNavigate) {
-      	     ev.stopImmediatePropagation();
-             this.cancelNavigate = false;
-             return;
-      	}
+            ev.stopImmediatePropagation();
+            this.cancelNavigate = false;
+            return;
+        }
 
         // Ask user's confirmation on leaving unsaved editor
         var dialog = confirm(this.confirmationMessage);
