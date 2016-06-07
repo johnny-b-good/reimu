@@ -47,8 +47,8 @@ def teardown_request(exception):
     reimu.db.disconnect()
 
 
-@admin.route('/admin')
-def posts_page(post_id=None):
+@admin.route('/admin/<path:path>')
+def posts_page(path=None):
     return render_template('admin.html')
 
 

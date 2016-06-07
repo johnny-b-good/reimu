@@ -71,7 +71,7 @@ var Router = Backbone.Router.extend({
 var ListView = Backbone.View.extend({
     initialize: function(opt){
         _.bindAll(this, 'render', 'filter');
-        this.filterThrottled = _.throttle(this.filter, 500);
+        this.filterThrottled = _.throttle(this.filter, 1000);
     },
 
     template: _.template($('.list-template').text()),
@@ -80,7 +80,8 @@ var ListView = Backbone.View.extend({
         'input': 'filterThrottled'
     },
 
-    render: function(){
+    render: function(collection){
+        var renderedCollection = collection || this.collection;
         this.$el.html(
             this.template({groups: this.makeGroups(this.collection)})
         );
@@ -98,43 +99,18 @@ var ListView = Backbone.View.extend({
     markCurrent: function(pid){},
 
     makeGroups: function(collection){
-        var groupedCollection = [];
-        var table = {};
-        collection.each(function(model, index, list){
-            var group = model.get('_monthYear');
-            if (!table.hasOwnProperty(group)) {
-                table[group] = [];
-                groupedCollection.push({monthYear: group, posts: table[group]});
-            }
-            table[group].push(model);
-        });
+        var groupedCollection = _.chain(collection).sortBy('created_at').groupBy('_monthYear').value();
         return groupedCollection;
     },
 
     filter: function(ev){
         var filterString = this.$('.list__filter').val();
-        // var hiddenPosts = [];
-        this.collection.each(function(post){
-            var titleMatches = false;
-            var dateMatches = false;
-            // TODO - в поиске игнорить регистр, сделать регуляркой
-            // Search by title
-            if (post.get('title')){
-                 titleMatches = post.get('title').search(filterString) !== -1;
-            }
-            // Search by date
-            if (post.get('created_at')){
-                dateMatches = post.get('created_at').search(filterString) !== -1;
-            }
-            // Hide unmatching elements
-            if (!(titleMatches || dateMatches)) {
-                // hiddenPosts.push(post.get('pid'));
-                this.$('.list__item[data-pid=' + post.get('pid') + ']').addClass('list__item--hidden');
-            }
-            else {
-                this.$('.list__item[data-pid=' + post.get('pid') + ']').removeClass('list__item--hidden');
-            }
-        });
+        var filteredCollection = this.collection.filter(function(post){ return true; });
+
+        var shadow = $('<div>');
+        shadow.html(this.template({groups: this.makeGroups(filteredCollection)}));
+        var tablePart = shadow.find('.list__groups');
+        this.$el.find('.list__groups').replaceWith(tablePart);
     }
 });
 
