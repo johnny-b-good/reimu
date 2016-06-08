@@ -1,9 +1,12 @@
-from flask import Flask, Markup
-from markdown import markdown
+# Standard modules
 from datetime import datetime
 
+# Extra modules
+from flask import Flask, Markup
+from markdown import markdown
+
+# App modules
 from reimu.blog import blog
-from reimu.admin import admin
 from reimu.auth import auth
 
 
@@ -17,7 +20,6 @@ app.config.from_object('reimu.config')
 
 # Register blueprints
 app.register_blueprint(blog)
-app.register_blueprint(admin)
 app.register_blueprint(auth)
 
 

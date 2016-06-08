@@ -1,5 +1,4 @@
 import sqlite3
-import json
 
 from flask import g, current_app
 
