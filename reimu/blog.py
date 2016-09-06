@@ -1,20 +1,19 @@
 from flask import Blueprint, g, render_template, abort, redirect, url_for, request, current_app, session
 
-import reimu.db
+import db
 
-POSTS_PER_PAGE = 10
 
 blog = Blueprint('blog', __name__)
 
 
 @blog.before_request
 def before_request():
-    reimu.db.connect()
+    db.connect()
 
 
 @blog.teardown_request
 def teardown_request(exception):
-    reimu.db.disconnect()
+    db.disconnect()
 
 
 @blog.route('/')
