@@ -1,6 +1,7 @@
-from flask import Flask, Blueprint, g, render_template, abort, redirect, url_for, request, current_app, session
+from flask import Flask, Blueprint, g, render_template, abort, redirect, url_for, request, session
+from flask import current_app as app
 
-import reimu.db as db
+import reimu.db
 
 
 blog = Blueprint('blog', __name__)
@@ -8,12 +9,12 @@ blog = Blueprint('blog', __name__)
 
 @blog.before_request
 def before_request():
-    db.connect()
+    reimu.db.connect()
 
 
 @blog.teardown_request
 def teardown_request(exception):
-    db.disconnect()
+    reimu.db.disconnect()
 
 
 @blog.route('/')
@@ -22,7 +23,7 @@ def index_page(page_num=0):
     """Render a blog page with posts"""
 
     # Get all posts for a given page, return 404 if there are none
-    posts_limits = (page_num*POSTS_PER_PAGE, POSTS_PER_PAGE)
+    posts_limits = (page_num * app.config['POSTS_PER_PAGE'], app.config['POSTS_PER_PAGE'])
     posts = reimu.db.select('SELECT * FROM Posts '
                             'ORDER BY created_at DESC '
                             'LIMIT ?,?', posts_limits)
@@ -33,10 +34,10 @@ def index_page(page_num=0):
     posts_count = reimu.db.count('Posts')
 
     # Calculate the number of pages
-    if posts_count % POSTS_PER_PAGE:
-        pages_count = posts_count // POSTS_PER_PAGE + 1
+    if posts_count % app.config['POSTS_PER_PAGE']:
+        pages_count = posts_count // app.config['POSTS_PER_PAGE'] + 1
     else:
-        pages_count = posts_count // POSTS_PER_PAGE
+        pages_count = posts_count // app.config['POSTS_PER_PAGE']
 
     return render_template('_page.html', posts=posts, posts_count=posts_count,
                            pages_count=pages_count, current_page=page_num)
