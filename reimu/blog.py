@@ -1,6 +1,6 @@
-from flask import Blueprint, g, render_template, abort, redirect, url_for, request, current_app, session
+from flask import Flask, Blueprint, g, render_template, abort, redirect, url_for, request, current_app, session
 
-import db
+import reimu.db as db
 
 
 blog = Blueprint('blog', __name__)
